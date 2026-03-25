@@ -1,0 +1,878 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>💖 LOVE SHACK TRIVIA – 200 CARDS | STANLEY CUP VIBES 💖</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #ff99cc 0%, #ff66b5 30%, #ff3388 70%, #cc2266 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+            font-family: 'Poppins', 'Segoe UI', 'Comic Neue', system-ui, sans-serif;
+            position: relative;
+        }
+
+        /* Glitter overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 25% 40%, rgba(255,215,0,0.2) 2px, transparent 2px),
+                              radial-gradient(circle at 75% 85%, rgba(255,255,200,0.25) 1px, transparent 2px),
+                              repeating-linear-gradient(45deg, rgba(255,200,230,0.1) 0px, rgba(255,200,230,0.1) 2px, transparent 2px, transparent 8px);
+            background-size: 40px 40px, 30px 30px, 20px 20px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* LOVE SHACK STANLEY CUP STYLE */
+        .game-board {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: #fff9f5;
+            border-radius: 48px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25), 0 0 0 4px #ffd966, 0 0 0 8px #ff99cc, 0 0 0 12px #ff66b5;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(1px);
+        }
+
+        /* Header with Stanley Cup sparkle */
+        .header {
+            background: linear-gradient(135deg, #ffb6d9, #ff99cc, #ff80bf);
+            padding: 24px 25px 20px;
+            text-align: center;
+            border-bottom: 3px solid #ffe0b5;
+            position: relative;
+            box-shadow: inset 0 1px 4px rgba(255,255,200,0.8), 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff0b5, #ffe0a3, #ffd580);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 3px 3px 0 #cc3388;
+            letter-spacing: 2px;
+        }
+        .header h1 span {
+            display: inline-block;
+            font-size: 2.2rem;
+        }
+        .header .sub {
+            background: #ffecb3;
+            display: inline-block;
+            padding: 6px 28px;
+            border-radius: 60px;
+            color: #b33b6e;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-top: 12px;
+            box-shadow: inset 0 1px 2px white, 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .sparkle-sticker {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #ffe5b4;
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.75rem;
+            color: #cc3388;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #ffccaa;
+            transform: rotate(5deg);
+        }
+
+        /* Host Mode Toggle */
+        .host-toggle {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 25px;
+            background: #fff2e6;
+            border-bottom: 1px solid #ffe0c4;
+        }
+        .host-toggle label {
+            font-weight: 600;
+            color: #b33b6e;
+            font-size: 0.9rem;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ffb6d9;
+            transition: 0.2s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.2s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #ff66b5;
+        }
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+        .host-badge {
+            background: #ffb6d9;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #b33b6e;
+        }
+
+        /* Score Zone */
+        .score-zone {
+            display: flex;
+            gap: 20px;
+            padding: 20px 25px;
+            background: #fff7ef;
+            border-bottom: 1px solid #ffe0c4;
+        }
+        .team {
+            flex: 1;
+            background: #ffeef5;
+            border-radius: 32px;
+            padding: 12px 10px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05), inset 0 1px 0 white;
+            border: 1px solid #ffd9b5;
+        }
+        .team h2 {
+            font-size: 1.4rem;
+            color: #b33b6e;
+            letter-spacing: 1px;
+        }
+        .team .score {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: #ffe0cc;
+            display: inline-block;
+            padding: 4px 28px;
+            border-radius: 60px;
+            margin: 8px 0;
+            color: #b33b6e;
+        }
+        .team-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .team-buttons button {
+            background: #ffd9b5;
+            border: none;
+            font-weight: 600;
+            padding: 6px 18px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #b33b6e;
+            transition: 0.07s linear;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .team-buttons button:active {
+            transform: scale(0.96);
+        }
+
+        /* Question Card */
+        .question-zone {
+            background: #fffaf5;
+            margin: 20px 25px;
+            border-radius: 48px;
+            padding: 24px 28px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08), inset 0 1px 0 white;
+            border: 1px solid #ffddbb;
+        }
+        .cat-tag {
+            display: inline-block;
+            background: #ffd9b5;
+            padding: 5px 24px;
+            border-radius: 50px;
+            color: #b33b6e;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+        }
+        .question-text {
+            font-size: 1.55rem;
+            font-weight: 600;
+            line-height: 1.4;
+            color: #4a2a38;
+            margin-bottom: 20px;
+        }
+        .options-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .opt-item {
+            background: #fff3e8;
+            padding: 12px 18px;
+            border-radius: 100px;
+            border: 1px solid #ffcfaa;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.07s linear;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #6b3e4e;
+        }
+        .opt-prefix {
+            background: #ffd9b5;
+            width: 36px;
+            height: 36px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: #b33b6e;
+            font-weight: 700;
+        }
+        .opt-item:hover {
+            background: #ffe6d5;
+            transform: scale(0.99);
+        }
+        .no-options {
+            background: #fff0e2;
+            padding: 16px;
+            border-radius: 50px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.95rem;
+            color: #b3667e;
+            margin: 12px 0;
+            border: 1px dashed #ffc48a;
+        }
+        .answer-reveal {
+            background: #ffecdd;
+            border-radius: 40px;
+            padding: 12px 18px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: 700;
+            color: #b33b6e;
+            display: none;
+            border-left: 5px solid #ff66b5;
+        }
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            font-weight: 700;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.05s;
+            min-width: 100px;
+        }
+        .pass-btn {
+            background: #ffc49a;
+            color: #a1375f;
+        }
+        .next-btn {
+            background: #ffb37c;
+            color: #a1375f;
+        }
+        .reset-btn {
+            background: #ffaa77;
+            color: #a1375f;
+        }
+        .reveal-btn {
+            background: #ffd0aa;
+            color: #a1375f;
+        }
+        .feedback {
+            background: #fff3ea;
+            color: #b3667e;
+            border-radius: 60px;
+            padding: 12px 18px;
+            margin-top: 18px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+            border: 1px solid #ffddbb;
+        }
+        .print-btn-area {
+            text-align: center;
+            margin: 10px 25px 25px;
+        }
+        .print-card-btn {
+            background: #ffc49a;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            color: #a1375f;
+            transition: 0.05s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        footer {
+            text-align: center;
+            font-size: 0.65rem;
+            padding: 18px;
+            background: #fff7ef;
+            color: #cc88a2;
+            border-top: 1px solid #ffe0c4;
+        }
+        @media (max-width: 650px) {
+            .question-text { font-size: 1.2rem; }
+            .team h2 { font-size: 1rem; }
+            .team .score { font-size: 1.8rem; padding: 0 12px; }
+            .action-bar { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-board">
+    <div class="header">
+        <div class="sparkle-sticker">✨ STANLEY CUP EDITION ✨</div>
+        <h1><span>💖</span> LOVE SHACK TRIVIA <span>🌸</span></h1>
+        <h1 style="font-size:1.8rem; margin-top:-5px;">STANLEY CUP VIBES</h1>
+        <div class="sub">🎀 CORRECT! ✨ WRONG! 💕 PASS & STEAL! 🎀</div>
+    </div>
+
+    <div class="host-toggle">
+        <label>👑 HOST MODE</label>
+        <label class="toggle-switch">
+            <input type="checkbox" id="hostModeToggle">
+            <span class="slider"></span>
+        </label>
+        <span class="host-badge" id="hostBadge">OFF</span>
+        <span style="font-size:0.7rem; color:#cc88a2;">(host sees answers)</span>
+    </div>
+
+    <div class="score-zone">
+        <div class="team" id="teamApanel">
+            <h2>💖 TEAM GLITTER</h2>
+            <div class="score" id="scoreA">0</div>
+            <div class="team-buttons">
+                <button data-team="A" data-points="1">+1 (Full)</button>
+                <button data-team="A" data-points="0.5">+0.5 (Steal)</button>
+            </div>
+        </div>
+        <div class="team" id="teamBpanel">
+            <h2>🌸 TEAM SPARKLE</h2>
+            <div class="score" id="scoreB">0</div>
+            <div class="team-buttons">
+                <button data-team="B" data-points="1">+1 (Full)</button>
+                <button data-team="B" data-points="0.5">+0.5 (Steal)</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="question-zone">
+        <span class="cat-tag" id="categoryTag">🌸 LOADING...</span>
+        <div class="question-text" id="questionText"></div>
+        <div id="optionsContainer"></div>
+        <div class="answer-reveal" id="answerReveal"></div>
+        <div class="action-bar">
+            <button class="action-btn pass-btn" id="passBtn">🎀 PASS → Other team steals (0.5pt)</button>
+            <button class="action-btn reveal-btn" id="revealBtn">🔍 REVEAL ANSWER (Host)</button>
+            <button class="action-btn next-btn" id="nextBtn">✨ NEXT CARD ✨</button>
+            <button class="action-btn reset-btn" id="resetGameBtn">🔄 RESET</button>
+        </div>
+        <div class="feedback" id="feedbackMsg">💖 Pick an answer or PASS to give steal chance 💖</div>
+    </div>
+    <div class="print-btn-area">
+        <button class="print-card-btn" id="printCardsBtn">🖨️ PRINT 200 DOUBLE-SIDED CARDS</button>
+    </div>
+    <footer>✨ STANLEY CUP INSPIRED ✨ LOVE SHACK FANCY VIBES ✨ HOST TOGGLES ANSWER MODE</footer>
+</div>
+
+<script>
+    // ------------------- 200 EXPERT QUESTIONS -------------------
+    const QUESTIONS = [];
+
+    function addQ(category, text, correctAnswer, optionsArray = null) {
+        QUESTIONS.push({
+            category: category,
+            text: text,
+            correct: correctAnswer,
+            options: optionsArray
+        });
+    }
+
+    // ========== GEN Z DEEP CUTS (35) ==========
+    addQ("GEN Z DEEP CUTS", "What does 'GYAT' mean in Gen Z slang?", "Girl Your Ass Thick / expression of amazement", null);
+    addQ("GEN Z DEEP CUTS", "Which Indian creator started the 'Aur batao' trend?", "Kusha Kapila", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Moots' mean?", "Mutuals (friends on social media)", null);
+    addQ("GEN Z DEEP CUTS", "Who is the 'Pawri girl' and what's her real name?", "Dananeer Mobeen", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Gatekeeping' mean in internet culture?", "Hiding/withholding information or trends", null);
+    addQ("GEN Z DEEP CUTS", "Which Indian streamer famously said 'Bhai tu mereko dekh raha hai'?", "Mortal (Naman Mathur)", null);
+    addQ("GEN Z DEEP CUTS", "What does 'E-girl' mean?", "Online girl who streams/uses anime aesthetic", null);
+    addQ("GEN Z DEEP CUTS", "Who started the 'What's in my bag?' trend in India?", "Kusha Kapila / Dolly Singh", null);
+    addQ("GEN Z DEEP CUTS", "What does 'NPC behavior' mean?", "Acting like a programmed, boring person", null);
+    addQ("GEN Z DEEP CUTS", "Which Indian influencer is known for 'Bhai, yeh to bahut zyada ho gaya'?", "Ashish Chanchlani", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Rizz' actually originate from?", "Charisma (shortened)", null);
+    addQ("GEN Z DEEP CUTS", "Who is 'Slayy Point'?", "Abhishek & Gaurav (comedy duo)", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Mid' mean?", "Mediocre / average", null);
+    addQ("GEN Z DEEP CUTS", "Which Indian creator popularized 'Main character' videos?", "Srishti Dixit", null);
+    addQ("GEN Z DEEP CUTS", "What is 'Bomboclart' meme from?", "Jamaican slang, went viral on Indian TikTok", null);
+    addQ("GEN Z DEEP CUTS", "Who is 'Triggered Insaan'?", "Nischay Malhan", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Copium' mean?", "Coping with disappointment through delusion", null);
+    addQ("GEN Z DEEP CUTS", "Which Indian YouTuber has the 'Kachra' catchphrase?", "BB Ki Vines (Bhuvan Bam)", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Ick' mean in dating slang?", "Something that instantly turns you off", null);
+    addQ("GEN Z DEEP CUTS", "Who is 'Saiman Says'?", "Saiyam Agarwal (satirical YouTuber)", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Based' mean?", "Agreeable / courageous / original opinion", null);
+    addQ("GEN Z DEEP CUTS", "Which Indian creator had the 'Bhai, kya kar raha hai tu?' viral audio?", "Yashraj Mukhate", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Stan' mean?", "Obsessive fan (from Eminem song)", null);
+    addQ("GEN Z DEEP CUTS", "Who is 'Uorfi Javed' known for?", "Bold fashion and controversy", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Touch grass' mean?", "Go outside / touch reality", null);
+    addQ("GEN Z DEEP CUTS", "Which Indian gamer is called '8bit'?", "Anirudh Singh (8bit Thug)", null);
+    addQ("GEN Z DEEP CUTS", "Who is 'Dolly Singh'?", "Comedy influencer & actress", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Aura points' mean?", "Coolness/status points", null);
+    addQ("GEN Z DEEP CUTS", "Which Indian streamer is known as 'Scout'?", "Tanmay Singh (ScoutOP)", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Rent free' mean?", "Living in someone's head without paying", null);
+    addQ("GEN Z DEEP CUTS", "Who is 'Mrunal Panchal'?", "Gaming YouTuber (Techno Gamerz)", null);
+    addQ("GEN Z DEEP CUTS", "What does 'Sus' actually originate from?", "Among Us game", null);
+    addQ("GEN Z DEEP CUTS", "Which Indian creator said 'Tatti hai mera phone'?", "Ashish Chanchlani", null);
+    addQ("GEN Z DEEP CUTS", "What does 'No bitches?' meme mean?", "Joke about having no romantic partners", null);
+    addQ("GEN Z DEEP CUTS", "What is 'Pookie' slang for?", "Cute, affectionate term for partner/friend", null);
+
+    // ========== PUNJABI ROYALTY (35) ==========
+    addQ("PUNJABI ROYALTY", "Which Punjabi singer's real name is Jazzy B?", "Jaswinder Singh Bains", null);
+    addQ("PUNJABI ROYALTY", "What is the actual meaning of 'Jatt' historically?", "Farming community / clan system", null);
+    addQ("PUNJABI ROYALTY", "Which song made AP Dhillon famous internationally?", "Brown Munde", null);
+    addQ("PUNJABI ROYALTY", "What is 'Rangla Punjab'?", "Punjabi cultural festival / pride phrase", null);
+    addQ("PUNJABI ROYALTY", "Who wrote the lyrics for 'Naah' by Diljit?", "Happy Raikoti", null);
+    addQ("PUNJABI ROYALTY", "What is the significance of 'Dhol' in Punjabi weddings?", "Announces groom's arrival, symbol of celebration", null);
+    addQ("PUNJABI ROYALTY", "What does 'Sardari' represent in Punjabi culture?", "Pride, honor, leadership (Sardar)", null);
+    addQ("PUNJABI ROYALTY", "Who is the only Punjabi singer to perform at Coachella?", "Diljit Dosanjh", null);
+    addQ("PUNJABI ROYALTY", "What is 'Pind di kudi' slang for?", "Village girl (often with traditional values)", null);
+    addQ("PUNJABI ROYALTY", "Which Punjabi song has the line 'Gedi route te khadke'?", "Gedi Route by Diljit", null);
+    addQ("PUNJABI ROYALTY", "What is 'Amritsari fish' special for?", "Fried with ajwain and besan", null);
+    addQ("PUNJABI ROYALTY", "Who is 'Surjit Bindrakhia'?", "Legendary Bhangra singer (Dupatta Tera Satrang Da)", null);
+    addQ("PUNJABI ROYALTY", "What is 'Gurdas Maan' famous for?", "Folk singer (Dil Da Mamla)", null);
+    addQ("PUNJABI ROYALTY", "Which Punjabi term means 'party' or 'celebration'?", "Mela", null);
+    addQ("PUNJABI ROYALTY", "Who sang 'Jind Mahi' originally?", "Malkit Singh", null);
+    addQ("PUNJABI ROYALTY", "What is 'Luddi' dance?", "Punjabi dance celebrating victory", null);
+    addQ("PUNJABI ROYALTY", "Which Punjabi film had 'Laung Laachi' song?", "Laung Laachi (2018)", null);
+    addQ("PUNJABI ROYALTY", "What is 'Makhan' in Punjabi?", "Butter", null);
+    addQ("PUNJABI ROYALTY", "Who is 'Kuldeep Manak'?", "Legendary Punjabi folk singer (Tera Yaar Bolda)", null);
+    addQ("PUNJABI ROYALTY", "What is 'Sikh Rehat Maryada'?", "Sikh code of conduct", null);
+    addQ("PUNJABI ROYALTY", "Which Punjabi singer has most YouTube subscribers?", "Diljit Dosanjh", null);
+    addQ("PUNJABI ROYALTY", "What is 'Phulkari dupatta'?", "Traditional embroidered scarf", null);
+    addQ("PUNJABI ROYALTY", "Who wrote 'Bulla Ki Jaana'?", "Bulleh Shah (Sufi poet)", null);
+    addQ("PUNJABI ROYALTY", "What is 'Tandoori' actually cooked in?", "Tandoor (clay oven, 400-500°C)", null);
+    addQ("PUNJABI ROYALTY", "What is 'Jutti'?", "Traditional Punjabi footwear", null);
+    addQ("PUNJABI ROYALTY", "Who sang 'Chitta' with Diljit?", "Shinda Kahlon", null);
+    addQ("PUNJABI ROYALTY", "What is 'Gidha' usually performed by?", "Women in a circle", null);
+    addQ("PUNJABI ROYALTY", "Which Punjabi singer is also a politician?", "Harbhajan Mann (contested)", null);
+    addQ("PUNJABI ROYALTY", "What is 'Sarson da saag' paired with?", "Makki di roti", null);
+    addQ("PUNJABI ROYALTY", "Who is 'Bohemia'?", "Punjabi rapper from USA", null);
+    addQ("PUNJABI ROYALTY", "What does 'Chardi Kala' mean?", "Positive attitude / rising spirits", null);
+    addQ("PUNJABI ROYALTY", "Which song made Karan Aujla famous?", "Don't Look", null);
+    addQ("PUNJABI ROYALTY", "What is 'Patiala Peg'?", "Large serving of whiskey (90ml+)", null);
+    addQ("PUNJABI ROYALTY", "Who is 'Amrinder Gill'?", "Punjabi actor & singer", null);
+    addQ("PUNJABI ROYALTY", "What is 'Rogani Naan'?", "Naan bread topped with sesame and butter", null);
+
+    // ========== BOLLYWOOD INSIDER (35) ==========
+    addQ("BOLLYWOOD INSIDER", "Who was the first choice for 'Kabir Singh' before Shahid?", "Ranbir Kapoor", null);
+    addQ("BOLLYWOOD INSIDER", "Which actor was paid in gold coins for 'Mughal-e-Azam'?", "Prithviraj Kapoor", null);
+    addQ("BOLLYWOOD INSIDER", "Which actress rejected 'Kuch Kuch Hota Hai'?", "Rani Mukerji (was offered first)", null);
+    addQ("BOLLYWOOD INSIDER", "What was Amitabh Bachchan's first film as lead?", "Saat Hindustani", null);
+    addQ("BOLLYWOOD INSIDER", "Which film has the longest climax in Bollywood?", "Kaho Naa Pyaar Hai (40 min)", null);
+    addQ("BOLLYWOOD INSIDER", "Who was the original choice for 'Munna Bhai MBBS'?", "Shah Rukh Khan", null);
+    addQ("BOLLYWOOD INSIDER", "Which actor holds record for most Filmfare nominations?", "Shah Rukh Khan", null);
+    addQ("BOLLYWOOD INSIDER", "What was the first Indian film with a kiss?", "Karma (1933) by Himanshu Rai", null);
+    addQ("BOLLYWOOD INSIDER", "Who composed 'Maa Tujhe Salaam'?", "A.R. Rahman", null);
+    addQ("BOLLYWOOD INSIDER", "Who is the highest-paid actress in Bollywood (2024-25)?", "Deepika Padukone", null);
+    addQ("BOLLYWOOD INSIDER", "Which director gave 7 consecutive hits?", "Rajkumar Hirani", null);
+    addQ("BOLLYWOOD INSIDER", "Who played the villain in 'Sholay'?", "Amjad Khan (Gabbar)", null);
+    addQ("BOLLYWOOD INSIDER", "What was Salman Khan's lead debut film?", "Maine Pyar Kiya", null);
+    addQ("BOLLYWOOD INSIDER", "Which actor has a black belt in Taekwondo?", "Akshay Kumar", null);
+    addQ("BOLLYWOOD INSIDER", "Who wrote the dialogues for 'Gangs of Wasseypur'?", "Anurag Kashyap & Zejay Hirani", null);
+    addQ("BOLLYWOOD INSIDER", "Who was the first Indian to win an Oscar?", "Bhanu Athaiya (Costume Design, Gandhi)", null);
+    addQ("BOLLYWOOD INSIDER", "What was the first 3D Bollywood film?", "Chhota Chetan", null);
+    addQ("BOLLYWOOD INSIDER", "Who composed the background score for 'Jawan'?", "Anirudh Ravichander", null);
+    addQ("BOLLYWOOD INSIDER", "Who sang 'Chaiyya Chaiyya' on the train?", "Sukhwinder Singh and Sapna Awasthi", null);
+    addQ("BOLLYWOOD INSIDER", "Who was the first choice for 'Queen'?", "Parineeti Chopra", null);
+    addQ("BOLLYWOOD INSIDER", "Which actor has won the most National Awards?", "Amitabh Bachchan (4)", null);
+    addQ("BOLLYWOOD INSIDER", "Who composed 'Jai Ho' for Slumdog Millionaire?", "A.R. Rahman", null);
+    addQ("BOLLYWOOD INSIDER", "Who wrote the script for 'Andaz Apna Apna'?", "Rajkumar Santoshi", null);
+    addQ("BOLLYWOOD INSIDER", "Which actor has a wax statue at Madame Tussauds first?", "Amitabh Bachchan", null);
+    addQ("BOLLYWOOD INSIDER", "Who was the villain in 'Dhoom 2'?", "Hrithik Roshan (anti-hero)", null);
+    addQ("BOLLYWOOD INSIDER", "Which film won the most Filmfare awards in a single year?", "Black (11 awards)", null);
+    addQ("BOLLYWOOD INSIDER", "Who played the iconic 'Mogambo'?", "Amrish Puri", null);
+    addQ("BOLLYWOOD INSIDER", "Which film introduced Alia Bhatt?", "Student of the Year", null);
+    addQ("BOLLYWOOD INSIDER", "Who directed 'Gully Boy'?", "Zoya Akhtar", null);
+    addQ("BOLLYWOOD INSIDER", "What is Ranbir Kapoor's highest-grossing film?", "Animal", null);
+    addQ("BOLLYWOOD INSIDER", "Who is 'Katrina Kaif' married to?", "Vicky Kaushal", null);
+    addQ("BOLLYWOOD INSIDER", "Which film had 'Bole Chudiyan' wedding song?", "Kabhi Khushi Kabhie Gham", null);
+    addQ("BOLLYWOOD INSIDER", "Who directed 'Jawan'?", "Atlee", null);
+    addQ("BOLLYWOOD INSIDER", "Who won Filmfare Best Actor for 'Sanju'?", "Ranbir Kapoor", null);
+    addQ("BOLLYWOOD INSIDER", "Which film won Oscar for 'Naatu Naatu'?", "RRR", null);
+
+    // ========== GLOBAL MIND-BENDERS (35) ==========
+    addQ("GLOBAL MIND-BENDERS", "Which country has the most time zones?", "France (12, including territories)", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the only letter not in any US state name?", "Q", null);
+    addQ("GLOBAL MIND-BENDERS", "Who was the first person to break the sound barrier?", "Chuck Yeager", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the most stolen book from libraries?", "The Bible", null);
+    addQ("GLOBAL MIND-BENDERS", "Which animal can hold its breath for 90 minutes?", "Sperm whale", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the only country that starts with 'Y'?", "Yemen", null);
+    addQ("GLOBAL MIND-BENDERS", "Who invented the World Wide Web?", "Tim Berners-Lee", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the most common surname in the world?", "Wang (China)", null);
+    addQ("GLOBAL MIND-BENDERS", "Which US state has the most active volcanoes?", "Alaska", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the only metal that is liquid at room temperature?", "Mercury", null);
+    addQ("GLOBAL MIND-BENDERS", "Who painted 'The Persistence of Memory' (melting clocks)?", "Salvador Dali", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the oldest continuously inhabited city?", "Damascus, Syria", null);
+    addQ("GLOBAL MIND-BENDERS", "Which planet rotates backwards?", "Venus", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the most expensive substance on Earth per gram?", "Antimatter (trillions)", null);
+    addQ("GLOBAL MIND-BENDERS", "Who was the first woman to win a Nobel Prize?", "Marie Curie", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the shortest war in history?", "Anglo-Zanzibar War (38 minutes)", null);
+    addQ("GLOBAL MIND-BENDERS", "Which country has the most pyramids?", "Sudan (more than Egypt)", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the only mammal capable of true flight?", "Bat", null);
+    addQ("GLOBAL MIND-BENDERS", "Who wrote 'The Communist Manifesto'?", "Karl Marx and Friedrich Engels", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the most translated document in the world?", "Universal Declaration of Human Rights", null);
+    addQ("GLOBAL MIND-BENDERS", "Which singer has the most Grammy awards?", "Beyoncé (32)", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the fastest animal in the ocean?", "Sailfish", null);
+    addQ("GLOBAL MIND-BENDERS", "Which country has the highest life expectancy?", "Monaco", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the only continent without a desert?", "Europe", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the deadliest animal to humans?", "Mosquito", null);
+    addQ("GLOBAL MIND-BENDERS", "Who painted the ceiling of the Sistine Chapel?", "Michelangelo", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the most spoken native language?", "Mandarin Chinese", null);
+    addQ("GLOBAL MIND-BENDERS", "Which country has the highest number of lakes?", "Canada", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the most populous city in the world?", "Tokyo", null);
+    addQ("GLOBAL MIND-BENDERS", "Which river flows through the Grand Canyon?", "Colorado River", null);
+    addQ("GLOBAL MIND-BENDERS", "Who wrote 'To Kill a Mockingbird'?", "Harper Lee", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the largest living structure on Earth?", "Great Barrier Reef", null);
+    addQ("GLOBAL MIND-BENDERS", "Which country consumes the most chocolate per capita?", "Switzerland", null);
+    addQ("GLOBAL MIND-BENDERS", "What is the smallest country in the world?", "Vatican City", null);
+    addQ("GLOBAL MIND-BENDERS", "Who discovered penicillin?", "Alexander Fleming", null);
+
+    // ========== BRAINIAC NIGHTMARE (30) ==========
+    addQ("BRAINIAC NIGHTMARE", "I speak without a mouth and hear without ears. I have no body, but I come alive with wind. What am I?", "Echo", null);
+    addQ("BRAINIAC NIGHTMARE", "The more you take, the more you leave behind. What are they?", "Footsteps", null);
+    addQ("BRAINIAC NIGHTMARE", "What is always in front of you but can’t be seen?", "The future", null);
+    addQ("BRAINIAC NIGHTMARE", "I have cities, but no houses. I have mountains, but no trees. I have water, but no fish. What am I?", "A map", null);
+    addQ("BRAINIAC NIGHTMARE", "What can you catch but not throw?", "A cold", null);
+    addQ("BRAINIAC NIGHTMARE", "What has a head, a tail, is brown, and has no legs?", "A penny", null);
+    addQ("BRAINIAC NIGHTMARE", "What month of the year has 28 days?", "All months", null);
+    addQ("BRAINIAC NIGHTMARE", "What is so fragile that saying its name breaks it?", "Silence", null);
+    addQ("BRAINIAC NIGHTMARE", "What has words but never speaks?", "A book", null);
+    addQ("BRAINIAC NIGHTMARE", "What gets wetter as it dries?", "A towel", null);
+    addQ("BRAINIAC NIGHTMARE", "I am taken from a mine and shut up in a wooden case, from which I am never released, and yet I am used by almost every person. What am I?", "Pencil lead", null);
+    addQ("BRAINIAC NIGHTMARE", "What has to be broken before you can use it?", "An egg", null);
+    addQ("BRAINIAC NIGHTMARE", "What has a neck but no head?", "A bottle", null);
+    addQ("BRAINIAC NIGHTMARE", "What has one eye but can’t see?", "A needle", null);
+    addQ("BRAINIAC NIGHTMARE", "What can fill a room but takes up no space?", "Light", null);
+    addQ("BRAINIAC NIGHTMARE", "What has a bottom at the top?", "Your legs", null);
+    addQ("BRAINIAC NIGHTMARE", "What has many keys but can’t open a single lock?", "A piano", null);
+    addQ("BRAINIAC NIGHTMARE", "What can run but never walks, has a mouth but never talks, has a head but never weeps, has a bed but never sleeps?", "A river", null);
+    addQ("BRAINIAC NIGHTMARE", "What is always coming but never arrives?", "Tomorrow", null);
+    addQ("BRAINIAC NIGHTMARE", "What can you hold without ever touching?", "Your breath", null);
+    addQ("BRAINIAC NIGHTMARE", "What has a ring but no finger?", "A telephone", null);
+    addQ("BRAINIAC NIGHTMARE", "What gets bigger the more you take away from it?", "A hole", null);
+    addQ("BRAINIAC NIGHTMARE", "What has a face and two hands but no arms or legs?", "A clock", null);
+    addQ("BRAINIAC NIGHTMARE", "What has a thumb and four fingers but is not alive?", "A glove", null);
+    addQ("BRAINIAC NIGHTMARE", "What has a head, a tail, but no body?", "A coin", null);
+    addQ("BRAINIAC NIGHTMARE", "What goes up but never comes down?", "Your age", null);
+    addQ("BRAINIAC NIGHTMARE", "What has a lake but no water?", "A map", null);
+    addQ("BRAINIAC NIGHTMARE", "What has a heart that doesn’t beat?", "An artichoke", null);
+    addQ("BRAINIAC NIGHTMARE", "What has teeth but cannot bite?", "A comb", null);
+    addQ("BRAINIAC NIGHTMARE", "What has a thousand words but cannot speak?", "A book", null);
+
+    // ========== BONUS: MIXED (30) ==========
+    addQ("MIXED GEMS", "What is the only number that has the same number of letters as its value?", "Four", null);
+    addQ("MIXED GEMS", "Which Indian city is known as the 'Pink City'?", "Jaipur", null);
+    addQ("MIXED GEMS", "What does 'OG' stand for?", "Original Gangster", null);
+    addQ("MIXED GEMS", "Who is the CEO of Microsoft?", "Satya Nadella", null);
+    addQ("MIXED GEMS", "What is the national flower of India?", "Lotus", null);
+    addQ("MIXED GEMS", "Which cricketer has the most ODI centuries?", "Sachin Tendulkar", null);
+    addQ("MIXED GEMS", "What is the chemical symbol for gold?", "Au", null);
+    addQ("MIXED GEMS", "Who wrote 'The Alchemist'?", "Paulo Coelho", null);
+    addQ("MIXED GEMS", "What is the largest desert in the world?", "Antarctic Desert", null);
+    addQ("MIXED GEMS", "Which actor played 'Deadpool'?", "Ryan Reynolds", null);
+    addQ("MIXED GEMS", "What is the main ingredient in guacamole?", "Avocado", null);
+    addQ("MIXED GEMS", "Which country is known as the Land of the Rising Sun?", "Japan", null);
+    addQ("MIXED GEMS", "Who painted the Mona Lisa?", "Leonardo da Vinci", null);
+    addQ("MIXED GEMS", "What is the fastest land animal?", "Cheetah", null);
+    addQ("MIXED GEMS", "Which Indian won the Nobel Peace Prize in 2014?", "Kailash Satyarthi", null);
+    addQ("MIXED GEMS", "What does 'VPN' stand for?", "Virtual Private Network", null);
+    addQ("MIXED GEMS", "Who is the lead singer of Coldplay?", "Chris Martin", null);
+    addQ("MIXED GEMS", "What is the capital of Italy?", "Rome", null);
+    addQ("MIXED GEMS", "Which sport is known as 'the beautiful game'?", "Football (Soccer)", null);
+    addQ("MIXED GEMS", "Who wrote 'Pride and Prejudice'?", "Jane Austen", null);
+    addQ("MIXED GEMS", "What is the hardest natural substance?", "Diamond", null);
+    addQ("MIXED GEMS", "Which planet is known as the 'Morning Star'?", "Venus", null);
+    addQ("MIXED GEMS", "Who is the founder of Facebook?", "Mark Zuckerberg", null);
+    addQ("MIXED GEMS", "What is the national animal of Australia?", "Kangaroo", null);
+    addQ("MIXED GEMS", "Which singer has the most number-one hits?", "The Beatles", null);
+    addQ("MIXED GEMS", "What is the longest bone in the human body?", "Femur", null);
+    addQ("MIXED GEMS", "Who directed 'Interstellar'?", "Christopher Nolan", null);
+    addQ("MIXED GEMS", "What is the currency of Japan?", "Yen", null);
+    addQ("MIXED GEMS", "Which Indian actor is known as 'Thalaiva'?", "Rajinikanth", null);
+    addQ("MIXED GEMS", "What does 'URL' stand for?", "Uniform Resource Locator", null);
+
+    // Shuffle for variety
+    for (let i = QUESTIONS.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [QUESTIONS[i], QUESTIONS[j]] = [QUESTIONS[j], QUESTIONS[i]];
+    }
+
+    // Game state
+    let currentIndex = 0;
+    let currentQuestion = QUESTIONS[0];
+    let stealMode = false;
+    let awaitingAnswer = true;
+    let lastPassingTeam = null;
+    let scoreA = 0, scoreB = 0;
+    let hostMode = false;
+    
+    const categoryTag = document.getElementById('categoryTag');
+    const questionText = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const feedbackMsg = document.getElementById('feedbackMsg');
+    const answerRevealDiv = document.getElementById('answerReveal');
+    const passBtn = document.getElementById('passBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const resetGameBtn = document.getElementById('resetGameBtn');
+    const revealBtn = document.getElementById('revealBtn');
+    const printBtn = document.getElementById('printCardsBtn');
+    const hostToggle = document.getElementById('hostModeToggle');
+    const hostBadge = document.getElementById('hostBadge');
+    const scoreElA = document.getElementById('scoreA');
+    const scoreElB = document.getElementById('scoreB');
+
+    function updateScoresUI() {
+        scoreElA.innerText = scoreA;
+        scoreElB.innerText = scoreB;
+    }
+
+    function addPoints(team, points) {
+        if (team === 'A') scoreA += points;
+        else scoreB += points;
+        updateScoresUI();
+    }
+
+    function updateHostMode() {
+        hostMode = hostToggle.checked;
+        if (hostMode) {
+            hostBadge.innerText = 'ON';
+            hostBadge.style.background = '#ff66b5';
+            hostBadge.style.color = 'white';
+        } else {
+            hostBadge.innerText = 'OFF';
+            hostBadge.style.background = '#ffb6d9';
+            hostBadge.style.color = '#b33b6e';
+            answerRevealDiv.style.display = 'none';
+        }
+    }
+
+    function revealAnswer() {
+        answerRevealDiv.innerHTML = `💖 ANSWER: ${currentQuestion.correct} 💖`;
+        answerRevealDiv.style.display = 'block';
+        if (!hostMode) {
+            setTimeout(() => {
+                if (!hostMode) answerRevealDiv.style.display = 'none';
+            }, 5000);
+        }
+    }
+
+    function loadQuestion() {
+        currentQuestion = QUESTIONS[currentIndex];
+        categoryTag.innerText = currentQuestion.category;
+        questionText.innerText = currentQuestion.text;
+        
+        optionsContainer.innerHTML = '';
+        answerRevealDiv.style.display = 'none';
+        
+        if (currentQuestion.options && currentQuestion.options.length > 0) {
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options-area';
+            currentQuestion.options.forEach((opt, idx) => {
+                const letter = String.fromCharCode(65+idx);
+                const optDiv = document.createElement('div');
+                optDiv.className = 'opt-item';
+                optDiv.innerHTML = `<span class="opt-prefix">${letter}</span><span>${opt}</span>`;
+                optDiv.addEventListener('click', () => handleAnswer(letter));
+                optionsDiv.appendChild(optDiv);
+            });
+            optionsContainer.appendChild(optionsDiv);
+        } else {
+            const noOptDiv = document.createElement('div');
+            noOptDiv.className = 'no-options';
+            noOptDiv.innerHTML = '🎀 OPEN ANSWER — Team answers verbally, then host awards points! 🎀';
+            optionsContainer.appendChild(noOptDiv);
+        }
+        
+        awaitingAnswer = true;
+        stealMode = false;
+        passBtn.disabled = false;
+        feedbackMsg.innerHTML = "💖 Team picks answer or PASS to give steal chance (0.5pt) 💖";
+    }
+
+    function handleAnswer(selectedLetter) {
+        if (!awaitingAnswer) {
+            feedbackMsg.innerHTML = "⏳ Already answered! Click NEXT for new question.";
+            return;
+        }
+        
+        if (!currentQuestion.options) {
+            feedbackMsg.innerHTML = `📢 Open answer! Correct answer: "${currentQuestion.correct}". Use +/- buttons to award points.`;
+            awaitingAnswer = false;
+            passBtn.disabled = true;
+            if (hostMode) revealAnswer();
+            return;
+        }
+        
+        const isCorrect = (selectedLetter === currentQuestion.correct);
+        
+        if (isCorrect) {
+            if (stealMode && lastPassingTeam) {
+                const stealingTeam = lastPassingTeam === 'A' ? 'B' : 'A';
+                feedbackMsg.innerHTML = `🔥 STEAL SUCCESS! Team ${stealingTeam} gets 0.5 points! Answer: ${currentQuestion.correct}. Use +/- buttons.`;
+            } else if (!stealMode) {
+                feedbackMsg.innerHTML = `✅ CORRECT! +1 point for answering team! Answer: ${currentQuestion.correct}. Use +/- buttons.`;
+            }
+            if (hostMode) revealAnswer();
+            awaitingAnswer = false;
+            passBtn.disabled = true;
+        } else {
+            feedbackMsg.innerHTML = `❌ WRONG! Correct answer: ${currentQuestion.correct}. Other team can attempt steal next round.`;
+            if (hostMode) revealAnswer();
+            awaitingAnswer = false;
+            passBtn.disabled = true;
+        }
+    }
+
+    passBtn.addEventListener('click', () => {
+        if (!awaitingAnswer) {
+            feedbackMsg.innerHTML = "Already answered! Can't PASS now.";
+            return;
+        }
+        
+        const teamPass = confirm("Which team is passing?\nOK = Team GLITTER passes\nCancel = Team SPARKLE passes");
+        if (teamPass) {
+            lastPassingTeam = 'A';
+            feedbackMsg.innerHTML = "🚨 TEAM GLITTER PASSED! Team SPARKLE gets STEAL chance for 0.5 points! Pick an answer! 🚨";
+        } else {
+            lastPassingTeam = 'B';
+            feedbackMsg.innerHTML = "🚨 TEAM SPARKLE PASSED! Team GLITTER gets STEAL chance for 0.5 points! Pick an answer! 🚨";
+        }
+        stealMode = true;
+        passBtn.disabled = true;
+    });
+
+    revealBtn.addEventListener('click', () => {
+        revealAnswer();
+    });
+
+    nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % QUESTIONS.length;
+        loadQuestion();
+    });
+
+    resetGameBtn.addEventListener('click', () => {
+        scoreA = 0;
+        scoreB = 0;
+        updateScoresUI();
+        currentIndex = 0;
+        loadQuestion();
+        feedbackMsg.innerHTML = "🔄 Game reset! New round starting. 🔄";
+        answerRevealDiv.style.display = 'none';
+    });
+
+    document.querySelectorAll('.team-buttons button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const team = btn.getAttribute('data-team');
+            const points = parseFloat(btn.getAttribute('data-points'));
+            addPoints(team, points);
+        });
+    });
+
+    hostToggle.addEventListener('change', updateHostMode);
+
+    printBtn.addEventListener('click', () => {
+        let printHtml = `<html><head><title>Love Shack Trivia - 200 Cards</title><style>
+            body{font-family:'Poppins',sans-serif; padding:20px; background:#ffeef5;}
+            .card{page-break-after:always; border:2px solid #ffb6d9; border-radius:32px; padding:24px; margin-bottom:20px; background:#fffaf5;}
+            .front{background:#fff9f5;}
+            .back{background:#fff5ee;}
+            h3{color:#cc3388;} .answer{font-size:1.2rem; font-weight:bold; color:#b33b6e;}
+            .category{background:#ffd9b5; display:inline-block; padding:4px 16px; border-radius:40px; font-size:0.7rem;}
+            hr{border-color:#ffccaa;}
+        </style></head><body>`;
+        
+        QUESTIONS.forEach((q, idx) => {
+            printHtml += `<div class="card front">
+                <div class="category">💖 ${q.category}</div>
+                <h3>Card ${idx+1}/200</h3>
+                <p style="font-size:1.3rem; font-weight:600; color:#4a2a38;">${q.text}</p>
+                ${q.options ? `<div style="margin:12px 0;"><strong>Options:</strong><br>${q.options.map(o => `• ${o}`).join('<br>')}</div>` : '<em style="color:#cc88a2;">🎀 Open-ended question — no options given</em>'}
+                <hr>
+                <p style="color:#cc88a2;">✨ FLIP FOR ANSWER ✨</p>
+            </div>`;
+            printHtml += `<div class="card back">
+                <div class="category">✅ ANSWER</div>
+                <h3>Card ${idx+1} (Back)</h3>
+                <p class="answer">${q.correct}</p>
+                <p style="color:#cc88a2;">💖 Love Shack Trivia - Stanley Cup Vibes 💖</p>
+            </div>`;
+        });
+        printHtml += `</body></html>`;
+        const win = window.open();
+        win.document.write(printHtml);
+        win.document.close();
+        win.print();
+    });
+
+    loadQuestion();
+    updateScoresUI();
+    updateHostMode();
+</script>
+</body>
+</html>
